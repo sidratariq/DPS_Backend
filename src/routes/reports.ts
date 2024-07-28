@@ -8,12 +8,11 @@ interface RunResult {
 }
 
 // Get all reports for a project
-// Get all reports for a project
 router.get('/project/:projectId', async (req, res) => {
 	try {
 		const rows = await db.query(
 			'SELECT * FROM reports WHERE projectid = ?',
-			{ projectId: req.params.projectId },
+			[req.params.projectId], // Changed this line
 		);
 		res.json(rows);
 	} catch (err) {
@@ -25,13 +24,14 @@ router.get('/project/:projectId', async (req, res) => {
 	}
 });
 
+// Create a report/
 // Create a report
 router.post('/', async (req, res) => {
 	const { id, text, projectid } = req.body;
 	try {
 		await db.run(
 			'INSERT INTO reports (id, text, projectid) VALUES (?, ?, ?)',
-			{ id, text, projectid },
+			[id, text, projectid],
 		);
 		res.status(201).json({ id, text, projectid });
 	} catch (err) {
@@ -42,14 +42,13 @@ router.post('/', async (req, res) => {
 		}
 	}
 });
-
 // Update a report
 router.put('/:id', async (req, res) => {
 	const { text } = req.body;
 	try {
 		const result = (await db.run(
 			'UPDATE reports SET text = ? WHERE id = ?',
-			{ text, id: req.params.id },
+			[text, req.params.id],
 		)) as RunResult;
 		res.json({ message: 'Report updated', changes: result.changes });
 	} catch (err) {
@@ -64,9 +63,9 @@ router.put('/:id', async (req, res) => {
 // Delete a report
 router.delete('/:id', async (req, res) => {
 	try {
-		const result = (await db.run('DELETE FROM reports WHERE id = ?', {
-			id: req.params.id,
-		})) as RunResult;
+		const result = (await db.run('DELETE FROM reports WHERE id = ?', [
+			req.params.id,
+		])) as RunResult;
 		res.json({ message: 'Report deleted', changes: result.changes });
 	} catch (err) {
 		if (err instanceof Error) {

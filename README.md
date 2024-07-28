@@ -18,25 +18,29 @@ The application will then be accessible at http://localhost:3000.
 
 ## Project Context
 
-You will develop a backend system for managing data about a company's projects and their associated reports. Each project may have multiple reports linked to it, though having reports is not mandatory. Start your implementation using the provided SQLite database([db/db.sqlite3](./db/db.sqlite3)).
+# Get all projects
+curl -H "Authorization: Password123" -X GET http://localhost:3000/api/projects
 
-Refer to the database schema provided for understanding the data structure 👇
+# Get a specific project
+curl -H "Authorization: Password123" -X GET http://localhost:3000/api/projects/3
 
-![Database schema](images/database_schema.png)
+# Create a new project
+curl -H "Authorization: Password123" -H "Content-Type: application/json" -X POST -d '{"id":"4", "name":"New Project", "description":"This is a new project created via API"}' http://localhost:3000/api/projects
 
-NOTE: You can use ([db.service.ts](./src/services/db.service.ts)) to handle SQL queries to the database.
+# Update a project
+curl -H "Authorization: Password123" -H "Content-Type: application/json" -X PUT -d '{"name":"Updated Project", "description":"This project has been updated via API"}' http://localhost:3000/api/projects/4
 
-## Challenge Tasks
+# Get all reports for a specific project
+curl -H "Authorization: Password123" -X GET http://localhost:3000/api/reports/project/1
 
--   **Fork this project:** Start by forking this repository
--   **REST API Development:** Design and implement a RESTful API to create, read, update, and delete projects and their reports.
--   **Special API Endpoint:** Create an API endpoint that retrieves all reports where the same word appears at least three times.
--   **Optional:** Secure all API routes with a hardcoded authentication token ("Password123").
--   **Submission:** After completing the challenge, email us the URL of your GitHub repository.
--   **Further information:**
-    -   If there is anything unclear regarding requirements, contact us by replying to our email.
-    -   Use small commits, we want to see your progress towards the solution.
-    -   Code clean and follow the best practices.
+# Create a new report
+curl -H "Authorization: Password123" -H "Content-Type: application/json" -X POST -d '{"id":"4", "text":"New report for testing", "projectid":"1"}' http://localhost:3000/api/reports
 
-\
-Happy coding!
+# Update an existing report
+curl -H "Authorization: Password123" -H "Content-Type: application/json" -X PUT -d '{"text":"Updated report text"}' http://localhost:3000/api/reports/4
+
+# Delete a report
+curl -H "Authorization: Password123" -X DELETE http://localhost:3000/api/reports/4
+
+# Get reports with frequent words
+curl -H "Authorization: Password123" -X GET http://localhost:3000/api/reports/frequent-words

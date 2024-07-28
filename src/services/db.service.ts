@@ -11,22 +11,18 @@ const db = new sqlite3.Database(dbPath, (err) => {
 	}
 });
 
-function query(
+function query<T>(
 	sql: string,
-	params?: { [key: string]: string | number | undefined },
-) {
+	params?: (string | number | undefined)[],
+): Promise<T> {
 	return new Promise((resolve, reject) => {
 		db.all(sql, params, (err, rows) => {
 			if (err) reject(err);
-			else resolve(rows);
+			else resolve(rows as T);
 		});
 	});
 }
-
-function run(
-	sql: string,
-	params?: { [key: string]: string | number | undefined },
-) {
+function run(sql: string, params?: (string | number | undefined)[]) {
 	return new Promise((resolve, reject) => {
 		db.run(sql, params, function (err) {
 			if (err) reject(err);
